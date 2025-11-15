@@ -8,6 +8,10 @@ chai.use(require('chai-sorted'))
 const sessionId = `User-Session-${Date.now()}`;
 const standardUser = Cypress.env('users').standard
 
+if (!standardUser) {
+  throw new Error('Missing the standard user')
+}
+
 // Consider These Functions to Custom Function
 /**
  * 

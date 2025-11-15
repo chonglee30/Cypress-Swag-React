@@ -26,13 +26,16 @@
     "cypress": "^15.5.0",
     "cypress-map": "^1.53.2",
     "prettier": "^2.8.3",
-    "prop-types": "^15.7.2"
+    "prop-types": "^15.7.2",
+    "start-server-and-test": "^2.1.2"
   },
   "scripts": {
     "start": "react-scripts start",
     "start-18": "react-scripts --openssl-legacy-provider start",
     "build": "react-scripts build",
-    "test": "cypress run"
+    "test": "cypress run",
+    "cy:open": "cypress open --e2e --browser chrome",
+    "start:open": "start-test start-18 3000 cy:open"
   },
   "browserslist": {
     "production": [
