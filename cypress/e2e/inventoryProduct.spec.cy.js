@@ -1,6 +1,7 @@
 /// <reference types="cypress" />
 import 'cypress-map'
 import { LoginPage } from "../pages/loginPage";
+import { InventoryPage } from '../pages/inventoryPage';
 const { _ } = Cypress
 
 const sessionId = `User-Session-${Date.now()}`;
@@ -10,17 +11,17 @@ if (!standardUser) {
   throw new Error('Missing the standard user')
 }
 
-describe('Product Inventory Item Test', { testIsolation: false }, () => {
-  before(() => {
-    LoginPage.sessionLogin(sessionId, standardUser.username, standardUser.password)
-    cy.visit('/inventory.html')
-    cy.get('.inventory_list')
-      .should('be.visible')
-      .find('.inventory_item')
-      .should('have.length.greaterThan', 3)
-  })
+describe('Product Inventory Item Test', () => {
+  context('Viewing Product Items', { testIsolation: false }, () => {
+    before(() => {
+      LoginPage.sessionLogin(sessionId, standardUser.username, standardUser.password)
+      cy.visit('/inventory.html')
+      cy.get('.inventory_list')
+        .should('be.visible')
+        .find('.inventory_item')
+        .should('have.length.greaterThan', 3)
+    })
 
-  context('Viewing Product Items', () => {
     it("Test Selected Product Inventory Item with id number & attribute name & value ", () => {
       const productName = 'Sauce Labs Fleece Jacket'
       const productPrice = '$49.99'
@@ -147,7 +148,16 @@ describe('Product Inventory Item Test', { testIsolation: false }, () => {
     })
   })
 
-  context('Adding Items to the Cart', () => {
+  context('Adding Items to the Cart', { viewportHeight: 1200 }, () => {
+    beforeEach(() => {
+      LoginPage.sessionLogin(sessionId, standardUser.username, standardUser.password)
+      cy.visit('/inventory.html')
+      cy.get('.inventory_list')
+        .should('be.visible')
+        .find('.inventory_item')
+        .should('have.length.greaterThan', 3)
+    })
+
     it('Adding & Verifying Items to the Cart', () => {
       const firstProductItem = 'Sauce Labs Bike Light'
       const secondProductItem = 'Sauce Labs Bolt T-Shirt'
@@ -182,10 +192,10 @@ describe('Product Inventory Item Test', { testIsolation: false }, () => {
       cy.get('.shopping_cart_badge').should('have.text', '2')
       cy.get('button:contains("Remove")').should('have.length', 2)
     })
-    it.only('Test Adding Items to the Cart', {viewportHeight: 1200}, () => {
+    it('Test Adding Items to the Cart', () => {
       const firstProductItem = 'Sauce Labs Bike Light'
       const secondProductItem = 'Sauce Labs Bolt T-Shirt'
-      cy.get('.shopping_cart_badge').should('not.exist')
+      cy.get('.shopping_cart_link').find('.shopping_cart_badge').should('not.exist')
 
       cy.contains('.inventory_item', firstProductItem).within(() => {
         cy.contains('button', 'Add to cart').click()
@@ -202,6 +212,19 @@ describe('Product Inventory Item Test', { testIsolation: false }, () => {
       })
 
       cy.contains('.shopping_cart_badge', 2).scrollIntoView().should('be.visible')
+      cy.get('.inventory_item:contains("Remove")').should('have.length', 2)
+    })
+
+    it('Test Adding Items to the Cart using PO', () => {
+      const firstProductItem = 'Sauce Labs Bike Light'
+      const secondProductItem = 'Sauce Labs Bolt T-Shirt'
+      InventoryPage.getCartBadge().should('not.exist')
+
+      InventoryPage.addInventoryItemToCart(firstProductItem)
+      InventoryPage.checkCartBadgeNumbers(1).should('be.visible')
+
+      InventoryPage.addInventoryItemToCart(secondProductItem)
+      InventoryPage.checkCartBadgeNumbers(2).should('be.visible')
       cy.get('.inventory_item:contains("Remove")').should('have.length', 2)
     })
   })
