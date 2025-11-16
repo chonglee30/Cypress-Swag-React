@@ -181,7 +181,6 @@ describe('Product Inventory Item Test', () => {
       cy.get('.shopping_cart_link').children().should('have.length', 1)
       cy.get('.shopping_cart_badge').should('have.text', '1')
 
-
       cy.get('[data-test="add-to-cart-sauce-labs-bolt-t-shirt"]').click()
       cy.get('[data-test="remove-sauce-labs-bolt-t-shirt"]')
         .map('innerText')

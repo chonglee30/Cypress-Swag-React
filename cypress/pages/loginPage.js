@@ -27,7 +27,15 @@ export const LoginPage = {
         cy.location('pathname').should('equal', "/inventory.html");
         cy.getCookie('session-username')
           .should('exist')
-      })
+      },
+      {
+        validate() {
+          cy.log('Validate...')
+          cy.visit('/inventory.html')
+          cy.location('pathname').should('equal', "/inventory.html");
+        },
+      },
+    )
   },
 
   getError() {
