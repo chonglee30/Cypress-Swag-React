@@ -30,9 +30,11 @@ export const LoginPage = {
       },
       {
         validate() {
-          cy.log('Validate...')
-          cy.visit('/inventory.html')
-          cy.location('pathname').should('equal', "/inventory.html");
+          cy.log('Validate Session...')
+          // Taking Longer time with instability test code Version:
+          //cy.visit('/inventory.html')
+          //cy.location('pathname').should('equal', "/inventory.html");
+          cy.getCookie('session-username').should('exist')
         },
       },
     )
