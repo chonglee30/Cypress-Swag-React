@@ -27,7 +27,8 @@
     "cypress-map": "^1.53.2",
     "prettier": "^2.8.3",
     "prop-types": "^15.7.2",
-    "start-server-and-test": "^2.1.2"
+    "start-server-and-test": "^2.1.2",
+    "wick-a11y": "^2.5.0"
   },
   "scripts": {
     "start": "react-scripts start",

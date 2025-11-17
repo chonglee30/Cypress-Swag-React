@@ -214,7 +214,7 @@ describe('Product Inventory Item Test', () => {
       cy.get('.inventory_item:contains("Remove")').should('have.length', 2)
     })
 
-    it('Test Adding Items to the Cart using PO', () => {
+    it('Test Adding Items using PO then remove 1 item - V1', () => {
       const firstProductItem = 'Sauce Labs Bike Light'
       const secondProductItem = 'Sauce Labs Bolt T-Shirt'
       InventoryPage.getCartBadge().should('not.exist')
@@ -225,6 +225,56 @@ describe('Product Inventory Item Test', () => {
       InventoryPage.addInventoryItemToCart(secondProductItem)
       InventoryPage.checkCartBadgeNumbers(2).should('be.visible')
       cy.get('.inventory_item:contains("Remove")').should('have.length', 2)
+
+      InventoryPage.getCartBadge().click()
+      cy.location('pathname').should('equal', "/cart.html");
+
+      cy.get('.cart_item').should('have.length', 2)
+      cy.contains('.cart_item', 'Bike Light').should('exist').contains('button', 'Remove').click()
+      cy.contains('.cart_item', 'Bike Light').should('not.exist')
+      cy.get('.cart_item').should('have.length', 1)
+      cy.get('.inventory_item_name').should('contain.text', 'Bolt T-Shirt')
+      InventoryPage.checkCartBadgeNumbers(1).should('be.visible')
+    })
+
+    it('Test Adding Items using PO then remove 1 item - V2 concise', () => {
+      const firstProductItem = 'Sauce Labs Bike Light'
+      const secondProductItem = 'Sauce Labs Bolt T-Shirt'
+      InventoryPage.getCartBadge().should('not.exist')
+
+      InventoryPage.addInventoryItemToCart(firstProductItem)
+      InventoryPage.checkCartBadgeNumbers(1).should('be.visible')
+
+      InventoryPage.addInventoryItemToCart(secondProductItem)
+      InventoryPage.checkCartBadgeNumbers(2).should('be.visible')
+
+      InventoryPage.getCartBadge().should('have.text', 2).click()
+      cy.location('pathname').should('equal', "/cart.html");
+      cy.get('.cart_list .cart_item').should('have.length', 2)
+      cy.contains('.cart_list .cart_item', 'Bike Light').should('exist').contains('button', 'Remove').click()
+      cy.get('.cart_list .cart_item').should('have.length', 1).contains('Bolt T-Shirt')
+      InventoryPage.getCartBadge().should('have.text', 1)
+    })
+  })
+
+  context('Product Item Images Check', () => {
+    beforeEach(() => {
+      LoginPage.sessionLogin(sessionId, standardUser.username, standardUser.password)
+      cy.visit('/inventory.html')
+      cy.get('.inventory_list')
+        .should('be.visible')
+        .find('.inventory_item')
+        .should('have.length.greaterThan', 3)
+    })
+
+    it.only('Ensure each product image has the alt and its corresponding value', () => {
+      const productNames = ['Sauce Labs Backpack', 'Sauce Labs Bike Light', 'Sauce Labs Bolt T-Shirt', 'Sauce Labs Fleece Jacket', 'Sauce Labs Onesie', 'Test.allTheThings() T-Shirt (Red)']    
+      cy.get('.inventory_list').within(() => {
+        cy.get('img')
+          .each(($img, k) => {
+            expect($img, `image ${k}`).to.have.attr('alt').to.be.eq(productNames[k])
+          })
+      })
     })
   })
 })

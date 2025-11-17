@@ -50,7 +50,7 @@ describe('Product Inventory Item Test', () => {
         })
     })
 
-    it('Test Cart Page Items - Version2', () => {
+    it.only('Test Cart Page Items - Version2', () => {
       const items = [
         'Sauce Labs Bike Light',
         'Sauce Labs Bolt T-Shirt',
@@ -74,6 +74,12 @@ describe('Product Inventory Item Test', () => {
             cy.contains('.inventory_item_name', item)
           })
       })
+
+      cy.window().its('localStorage')
+        .invoke('getItem', 'cart-contents')
+        .should('exist') // since we are not sure when application set the item, good to ensure application to set item.
+        .then(JSON.parse)
+        .should('deep.equal', [0, 1, 2]);
 
     })
   })
