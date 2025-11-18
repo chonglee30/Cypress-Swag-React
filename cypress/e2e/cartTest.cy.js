@@ -205,5 +205,30 @@ describe('Product Inventory Item Checkout Test', () => {
         .should('not.exist')
     })
 
+    it.only('Test Complete Checkout Process - random Ids', () => {
+      const pickedItems = _.sampleSize(InventoryData, 3)
+      const randomIds = _.map(pickedItems, 'id')
+      const subTotal = _.sumBy(pickedItems, 'price');
+      window.localStorage.setItem('cart-contents', JSON.stringify(randomIds))
+
+      // Skip to checkout step 1
+      cy.visit('/checkout-step-one.html')
+      cy.location('pathname').should('equal', "/checkout-step-one.html");
+      cy.get('.checkout_info_wrapper').within(() => {
+        cy.get('[data-test="firstName"]').type('Michael').should('have.value', 'Michael')
+        cy.get('[data-test="lastName"]').type('Jordan').should('have.value', 'Jordan')
+        cy.get('[data-test="postalCode"]').type('90210').should('have.value', '90210')
+        cy.get('input[type=submit]').should('have.attr', 'value', 'Continue').click()
+      })
+      cy.location('pathname').should('equal', "/checkout-step-two.html");
+      cy.get('.cart_list .cart_item').should('have.length', pickedItems.length)
+      cy.get('.summary_subtotal_label')
+        .then(($subtotal) => {
+          const match = $subtotal.text().match(/\d+(\.\d+)?/) 
+          const price = parseFloat(match[0])
+          expect(price).to.eq(subTotal)
+        })
+      cy.contains('.summary_subtotal_label', '$'+subTotal)  
+    })
   })
 })
