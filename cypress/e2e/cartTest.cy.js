@@ -219,8 +219,8 @@ describe('Product Inventory Item Checkout Test', () => {
       const pickedItems = _.sampleSize(InventoryData, 3)
       const randomIds = _.map(pickedItems, 'id')
       const subTotal = _.sumBy(pickedItems, 'price');
-     // const minTax = (subTotal * 0.05).toFixed(2)
-     // const maxTax = (subTotal * 0.1).toFixed(2)
+      // const minTax = (subTotal * 0.05).toFixed(2)
+      // const maxTax = (subTotal * 0.1).toFixed(2)
       const minTax = subTotal * 0.05
       const maxTax = subTotal * 0.1
 
@@ -256,5 +256,41 @@ describe('Product Inventory Item Checkout Test', () => {
         .apply(Number)
         .should('be.within', minTax, maxTax)
     })
+
+    it('Test Application to set product ids', () => {
+      // Beginning - Empty Cart
+      cy.window()
+        .its('ShoppingCart')
+        .invoke('getCartContents')
+        .should('deep.equal', [])
+
+      cy.window()
+        .its('ShoppingCart')
+        .invoke('addItem', 2)
+
+      cy.window()
+        .its('ShoppingCart')
+        .invoke('addItem', 4)
+
+      InventoryPage.getCartBadge().should('have.text', 2).click()
+
+      cy.window()
+        .its('ShoppingCart')
+        .invoke('getCartContents')
+        .should('deep.equal', [2, 4])
+
+      cy.visit('/cart.html')
+      cy.get('.cart_list .cart_item').should('have.length', 2)
+
+      // Grab the id property from each item in the InventoryData array
+      //const ids = _.map(InventoryData, 'id')
+      //window.localStorage.setItem('cart-contents', JSON.stringify(ids))
+
+      //cy.visit('/cart.html')
+      //cy.get('.cart_list .cart_item').should('have.length', InventoryData.length)
+
+
+    })
+
   })
 })
