@@ -267,7 +267,7 @@ describe('Product Inventory Item Test', () => {
         .should('have.length.greaterThan', 3)
     })
 
-    it.only('Ensure each product image has the alt and its corresponding value', () => {
+    it('Ensure each product image has the alt and its corresponding value', () => {
       const productNames = ['Sauce Labs Backpack', 'Sauce Labs Bike Light', 'Sauce Labs Bolt T-Shirt', 'Sauce Labs Fleece Jacket', 'Sauce Labs Onesie', 'Test.allTheThings() T-Shirt (Red)']    
       cy.get('.inventory_list').within(() => {
         cy.get('img')

@@ -2,6 +2,9 @@
 import 'cypress-map'
 import { LoginPage } from "../pages/loginPage";
 import { InventoryPage } from '../pages/inventoryPage';
+import inventoryData from '../fixtures/inventoryList.json';
+import { InventoryData } from '../../src/utils/InventoryData';
+
 const { _ } = Cypress
 
 const sessionId = `User-Session-${Date.now()}`;
@@ -50,12 +53,17 @@ describe('Product Inventory Item Test', () => {
         })
     })
 
-    it.only('Test Cart Page Items - Version2', () => {
+    it('Test Cart Page Items - Version2 - fixture data', () => {
       const items = [
         'Sauce Labs Bike Light',
         'Sauce Labs Bolt T-Shirt',
         'Sauce Labs Onesie',
       ]
+
+      const selectedIds = _.chain(inventoryData)
+        .filter((inventory) => items.includes(inventory.name))
+        .map('id')
+        .value()
 
       items.forEach(InventoryPage.addInventoryItemToCart)
       InventoryPage.getCartBadge().should('have.text', items.length)
@@ -79,8 +87,40 @@ describe('Product Inventory Item Test', () => {
         .invoke('getItem', 'cart-contents')
         .should('exist') // since we are not sure when application set the item, good to ensure application to set item.
         .then(JSON.parse)
-        .should('deep.equal', [0, 1, 2]);
+        .should('deep.equal', selectedIds);
+    })
 
+    it('Test Cart Page Items - Version3 - existing source code', () => {
+      const items = [
+        'Sauce Labs Bike Light',
+        'Sauce Labs Bolt T-Shirt',
+        'Sauce Labs Onesie',
+      ]
+
+      const selectedIds = items.map((name) => _.find(InventoryData, { name })?.id)
+      items.forEach(InventoryPage.addInventoryItemToCart)
+      InventoryPage.getCartBadge().should('have.text', items.length)
+        .scrollIntoView().click()
+
+      cy.location('pathname').should('equal', "/cart.html");
+      cy.get('.title').should('have.text', 'Your Cart')
+
+      items.forEach((item, index) => {
+
+        cy.get('.cart_list .cart_item')
+          .should('have.length', 3)
+          .eq(index)
+          .within(() => {
+            cy.contains('.cart_quantity', 1)
+            cy.contains('.inventory_item_name', item)
+          })
+      })
+
+      cy.window().its('localStorage')
+        .invoke('getItem', 'cart-contents')
+        .should('exist') // since we are not sure when application set the item, good to ensure application to set item.
+        .then(JSON.parse)
+        .should('deep.equal', selectedIds);
     })
   })
 })
