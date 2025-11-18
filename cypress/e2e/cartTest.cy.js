@@ -14,6 +14,16 @@ if (!standardUser) {
   throw new Error('Missing the standard user')
 }
 
+function priceRange(min, max) {
+  if (min > max) throw new Error('min should be less or equal to max')
+
+  return function checkElement($el) {
+    const text = $el.text().replace('Tax: $', '')
+    const price = Number(text)
+    expect(price, 'price').to.be.within(min, max)
+  }
+}
+
 describe('Product Inventory Item Checkout Test', () => {
   context('Viewing Cart Checkout Items', { testIsolation: true }, () => {
     beforeEach(() => {
@@ -205,10 +215,15 @@ describe('Product Inventory Item Checkout Test', () => {
         .should('not.exist')
     })
 
-    it.only('Test Complete Checkout Process - random Ids', () => {
+    it('Test Complete Checkout Process - random Ids', () => {
       const pickedItems = _.sampleSize(InventoryData, 3)
       const randomIds = _.map(pickedItems, 'id')
       const subTotal = _.sumBy(pickedItems, 'price');
+     // const minTax = (subTotal * 0.05).toFixed(2)
+     // const maxTax = (subTotal * 0.1).toFixed(2)
+      const minTax = subTotal * 0.05
+      const maxTax = subTotal * 0.1
+
       window.localStorage.setItem('cart-contents', JSON.stringify(randomIds))
 
       // Skip to checkout step 1
@@ -224,11 +239,22 @@ describe('Product Inventory Item Checkout Test', () => {
       cy.get('.cart_list .cart_item').should('have.length', pickedItems.length)
       cy.get('.summary_subtotal_label')
         .then(($subtotal) => {
-          const match = $subtotal.text().match(/\d+(\.\d+)?/) 
+          const match = $subtotal.text().match(/\d+(\.\d+)?/)
           const price = parseFloat(match[0])
           expect(price).to.eq(subTotal)
         })
-      cy.contains('.summary_subtotal_label', '$'+subTotal)  
+      cy.contains('.summary_subtotal_label', '$' + subTotal)
+      cy.log("Min: " + minTax)
+      cy.log("Max: " + maxTax)
+      cy.get('.summary_tax_label').should(priceRange(minTax, maxTax))
+
+      const priceRe = /\$(?<price>\d+\.\d{2})/
+      cy.get('.summary_tax_label')
+        .invoke('text')
+        .invoke('match', priceRe)
+        .its('groups.price')
+        .apply(Number)
+        .should('be.within', minTax, maxTax)
     })
   })
 })
