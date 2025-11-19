@@ -257,7 +257,7 @@ describe('Product Inventory Item Checkout Test', () => {
         .should('be.within', minTax, maxTax)
     })
 
-    it('Test Application to set product ids', () => {
+    it('Test Checkout Process using AppAction', () => {
       // Beginning - Empty Cart
       cy.window()
         .its('ShoppingCart')
@@ -281,14 +281,6 @@ describe('Product Inventory Item Checkout Test', () => {
 
       cy.visit('/cart.html')
       cy.get('.cart_list .cart_item').should('have.length', 2)
-
-      // Grab the id property from each item in the InventoryData array
-      //const ids = _.map(InventoryData, 'id')
-      //window.localStorage.setItem('cart-contents', JSON.stringify(ids))
-
-      //cy.visit('/cart.html')
-      //cy.get('.cart_list .cart_item').should('have.length', InventoryData.length)
-
 
     })
 
