@@ -161,11 +161,8 @@ describe('Product Inventory Item Checkout Test', () => {
 
       cy.get('[data-test="checkout"]').click()  // Click checkout button 
       cy.location('pathname').should('equal', "/checkout-step-one.html");
-      cy.get('[data-test="firstName"]').type('Michael').should('have.value', 'Michael')
-      cy.get('[data-test="lastName"]').type('Jordan').should('have.value', 'Jordan')
-      cy.get('[data-test="postalCode"]').type('90210').should('have.value', '90210')
-      cy.get('[data-test="continue"]').click()
-
+      cy.get('form')
+      cy.fillFormClickContinue('Michael', 'Jordan', '90210')
       cy.location('pathname').should('equal', "/checkout-step-two.html");
       items.forEach((item, index) => {
         cy.get('.cart_list .cart_item')
@@ -198,12 +195,10 @@ describe('Product Inventory Item Checkout Test', () => {
       cy.get('.cart_list .cart_item').should('have.length', InventoryData.length)
       cy.contains('button', 'Checkout').click()
       cy.location('pathname').should('equal', "/checkout-step-one.html");
-      cy.get('.checkout_info_wrapper').within(() => {
-        cy.get('[data-test="firstName"]').type('Michael').should('have.value', 'Michael')
-        cy.get('[data-test="lastName"]').type('Jordan').should('have.value', 'Jordan')
-        cy.get('[data-test="postalCode"]').type('90210').should('have.value', '90210')
-        cy.get('input[type=submit]').should('have.attr', 'value', 'Continue').click()
-      })
+      
+      cy.get('form')
+      cy.fillFormClickContinue('Michael', 'Jordan', '90210')
+
       cy.location('pathname').should('equal', "/checkout-step-two.html");
       cy.get('.cart_list .cart_item').should('have.length', InventoryData.length)
       cy.contains('[data-test=finish]', 'Finish').click()

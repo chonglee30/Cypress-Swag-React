@@ -23,3 +23,12 @@
 //
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
+
+Cypress.Commands.add('fillFormClickContinue', (firstName, lastName, zipCode) => {
+    cy.get('.checkout_info_wrapper').within(() => {
+        cy.get('[data-test="firstName"]').type(firstName).should('have.value', firstName)
+        cy.get('[data-test="lastName"]').type(lastName).should('have.value', lastName)
+        cy.get('[data-test="postalCode"]').type(zipCode).should('have.value', zipCode)
+        cy.get('input[type=submit]').should('have.attr', 'value', 'Continue').click()
+    })
+})
