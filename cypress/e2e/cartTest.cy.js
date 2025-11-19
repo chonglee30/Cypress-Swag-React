@@ -196,8 +196,10 @@ describe('Product Inventory Item Checkout Test', () => {
       cy.contains('button', 'Checkout').click()
       cy.location('pathname').should('equal', "/checkout-step-one.html");
       
-      cy.get('form')
-      cy.fillFormClickContinue('Michael', 'Jordan', '90210')
+      cy.get('.checkout_info_wrapper form')
+        .find('input[type="submit"]')
+        .should('have.attr', 'value', 'Continue')
+      cy.fillForm('Michael', 'Jordan', '90210').submit()
 
       cy.location('pathname').should('equal', "/checkout-step-two.html");
       cy.get('.cart_list .cart_item').should('have.length', InventoryData.length)
