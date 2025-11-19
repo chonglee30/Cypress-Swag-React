@@ -1,6 +1,6 @@
 # taste-the-sauce
 
-> Cypress testing tutorial using the SauceLabs sample web app
+> Cypress UI testing using the SauceLabs sample web app
 
 ![Store login](./images/store1.png)
 
@@ -19,10 +19,8 @@ $ npm install
 ```
 
 ## Run
-
-To start the application if you are using Node v16 use `npm start` command. If you are using Node v17+ use `npm run start-18` command (because of this [SSL error](https://stackoverflow.com/questions/69692842/error-message-error0308010cdigital-envelope-routinesunsupported)).
-
-In both cases, it should print
+npm run start-18 as it is using Node v17+
+it should print
 
 ```
 Compiled successfully!
@@ -30,7 +28,6 @@ Compiled successfully!
 You can now view taste-the-sauce in the browser.
 
   Local:            http://localhost:3000
-  On Your Network:  http://10.0.0.188:3000
 
 Note that the development build is not optimized.
 To create a production build, use npm run build.
@@ -38,7 +35,7 @@ To create a production build, use npm run build.
 
 Open the browser and point at `localhost:3000`, you should see the login page.
 
-The original web application was forked from [saucelabs/sample-app-web](https://github.com/saucelabs/sample-app-web) repo.
+The original web application was forked from [saucelabs/sample-app-web](https://github.com/saucelabs/sample-app-web) repo and Gleb Bahmutov did basic react application.  This Cypress testing is based on other developers' react application.
 
 ## See also
 
