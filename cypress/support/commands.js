@@ -25,6 +25,9 @@
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
 
 // this command yield the result of last command - cy.within yields its subject
+
+import '@testing-library/cypress/add-commands'
+
 Cypress.Commands.add('fillForm', (firstName, lastName, zipCode) => {
    cy.get('.checkout_info_wrapper form').within(() => {
         cy.get('[data-test="firstName"]').type(firstName).should('have.value', firstName)

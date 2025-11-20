@@ -46,4 +46,14 @@ describe('Accessibility Test for each page', () => {
     })
   });
 
+  context('Cypress Testing Library', () => {
+    it('Login Test by Cypress Testing Library to check accessible', () => {
+      // cy.findByRole('textbox', {name: /username/i}).should('exist')   //textbox doesn't work well
+      //cy.findByRole('textbox', { name: /Password/i }).type(standardUser.password) //textbox doesn't work well
+      cy.findByRole('button', { name: /Login/i }).should('exist') // Good
+      // cy.location('pathname').should('equal', "/inventory.html");
+      // cy.get('.inventory_list')
+      //   .should('be.visible')
+    })
+  });
 })
