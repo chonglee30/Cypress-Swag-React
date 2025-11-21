@@ -28,8 +28,16 @@
 
 import '@testing-library/cypress/add-commands'
 
-Cypress.Commands.add('fillForm', (firstName, lastName, zipCode) => {
-   cy.get('.checkout_info_wrapper form').within(() => {
+// Cypress.Commands.add('fillForm', (firstName, lastName, zipCode) => {
+//     cy.get('.checkout_info_wrapper form').within(() => {
+//         cy.get('[data-test="firstName"]').type(firstName).should('have.value', firstName)
+//         cy.get('[data-test="lastName"]').type(lastName).should('have.value', lastName)
+//         cy.get('[data-test="postalCode"]').type(zipCode).should('have.value', zipCode)
+//     })
+// })
+
+Cypress.Commands.add('fillForm', {prevSubject: 'element'}, (subject, firstName, lastName, zipCode) => {
+    cy.wrap(subject, {log: false}).within(() => {
         cy.get('[data-test="firstName"]').type(firstName).should('have.value', firstName)
         cy.get('[data-test="lastName"]').type(lastName).should('have.value', lastName)
         cy.get('[data-test="postalCode"]').type(zipCode).should('have.value', zipCode)
