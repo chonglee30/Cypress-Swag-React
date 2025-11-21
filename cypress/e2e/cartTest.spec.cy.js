@@ -200,8 +200,15 @@ describe('Product Inventory Item Checkout Test', () => {
       cy.get('.checkout_info_wrapper form')
         .find('input[type="submit"]')
         .should('have.attr', 'value', 'Continue')
-      cy.get('.checkout_info_wrapper form').fillForm('Michael', 'Jordan', '90210').submit()
 
+      const userForm = {
+        '[data-test="firstName"]': 'Michael',
+        '[data-test="lastName"]': 'Jordan',
+        '[data-test="postalCode"]': '90210'
+      }
+
+      //cy.get('.checkout_info_wrapper form').fillForm(userForm).submit()
+      cy.get('.checkout_info_wrapper form').fillInputForm(userForm).submit()
       cy.location('pathname').should('equal', "/checkout-step-two.html");
       cy.get('.cart_list .cart_item').should('have.length', InventoryData.length)
       cy.contains('[data-test=finish]', 'Finish').click()
